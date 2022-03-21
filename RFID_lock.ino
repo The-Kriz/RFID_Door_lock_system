@@ -2,7 +2,6 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-
 //pins & attribute values
 #define relay 8
 #define SS_PIN 10
@@ -10,7 +9,8 @@
 #define ACCESS_DELAY 10000 // time the door should be opened for
 #define DELAY 5000
 MFRC522 mfrc522(SS_PIN, RST_PIN);
- 
+#define members 4 // enter number of people who has access
+const char* verified_rfid[] = {"69 C8 E2 2A","68 C8 E2 2A","67 C8 E2 2A","66 C8 E2 2A"} ;// Enter UID of the cards that need the access to the room
 void setup() 
 {
   Serial.begin(9600);  
@@ -49,23 +49,26 @@ void loop()
   Serial.println();
   Serial.print("Message : ");
   content.toUpperCase();
-  if (content.substring(1) == "69 C8 E2 2A") //UID of the card that need the access to the room
+  for(int j = 0;j < members ;j++)
   {
-    Serial.println("Authorized access");
-    Serial.println();
-    digitalWrite(relay, HIGH);
-    delay(ACCESS_DELAY);
-    digitalWrite(relay, LOW);
-    delay(DELAY);
-
-  }
- 
- else   {
+  if (content.substring(1) == verified_rfid[j])
+    {
+      Serial.println("Authorized access");
+      Serial.println (employ[j]);
+      Serial.println();
+      digitalWrite(relay, HIGH);
+      delay(ACCESS_DELAY);
+      digitalWrite(relay, LOW);
+      delay(DELAY);
+  
+    }
+   
+    else   {
     Serial.println(" Access denied");
  
 
     delay(DELAY);
-
+        }
  
   }
 }
