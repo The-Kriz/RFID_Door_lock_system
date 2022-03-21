@@ -11,7 +11,6 @@
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 #define members 4 // enter number of people who has access
 const char* verified_rfid[] = {"69 C8 E2 2A","68 C8 E2 2A","67 C8 E2 2A","66 C8 E2 2A"} ;// Enter UID of the cards that need the access to the room
-const char* employ[]={"Harikrishnan M","Akashy antony","Nived k","Glenn paul aby"};
 void setup() 
 {
   Serial.begin(9600);  
