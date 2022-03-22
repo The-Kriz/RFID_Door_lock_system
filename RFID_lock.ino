@@ -3,25 +3,38 @@
 #include <MFRC522.h>
 
 //pins & attribute values
-#define relay 8
+#define RELAY 8
 #define SS_PIN 10
 #define RST_PIN 9
-#define ACCESS_DELAY 10000 // time the door should be opened for
+#define ACCESS_DELAY 5000 // time the door should be opened for
 #define DELAY 5000
-#define members 30 // enter number of people who has access
+#define members 3 // enter number of people who has access
 
-const char* verified_rfid[] = {"69 C8 E2 2A","68 C8 E2 2A","67 C8 E2 2A","66 C8 E2 2A"} ;// Enter UID of the cards that need the access to the room
-const char* employ[]={"Harikrishnan M","Akashy antony","Nived k","Glenn paul aby"};
+// User Tag Id and User name 
+const char* verified_rfid[] = 
+{
+"70 82 7A 89",
+"1B 6F B3 73",
+"14 8F CE 33",
+"54 43 C3 33"
+} ;// Enter UID of the cards that need the access to the room
+const char* employ[]=
+{
+"Akashy antony",
+"Nived k",
+"Harikrishnan M",
+"Aryan Athul"
+};
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 void setup() 
 {
+  pinMode(RELAY, OUTPUT);
   Serial.begin(9600);  
   SPI.begin();          
   mfrc522.PCD_Init();  
-
-  digitalWrite(relay, LOW);
+  digitalWrite(RELAY, LOW);
 
   Serial.println("Put your card to the reader...");
   Serial.println();
@@ -42,6 +55,7 @@ void loop()
   Serial.print("UID tag :");
   String content= "";
   byte letter;
+  bool foundTag = false ;
   for (byte i = 0; i < mfrc522.uid.size; i++) 
     {
        Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
@@ -52,23 +66,26 @@ void loop()
   Serial.println();
   Serial.print("Message : ");
   content.toUpperCase();
+  
   for(int j = 0;j < members ;j++)
     {
     if (content.substring(1) == verified_rfid[j])
       {
         Serial.println("Authorized access");
-        Serial.println (employ[j]);
-       Serial.println();
-       digitalWrite(relay, HIGH);
-       delay(ACCESS_DELAY);
-        digitalWrite(relay, LOW);
+        Serial.println(employ[j]);
+        foundTag = true;
+        Serial.println();
+        digitalWrite(RELAY, HIGH);
+        delay(ACCESS_DELAY);
+        digitalWrite(RELAY, LOW);
         delay(DELAY);
-      }
-    else
+      }}
+    if (!foundTag)
         {
           Serial.println(" Access denied");
           Serial.println("Unauthorized User");
-         delay(DELAY);
+          delay(DELAY)
+         ;
         }
-      }
+      
 }
