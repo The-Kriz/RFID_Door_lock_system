@@ -68,8 +68,7 @@ void loop()
   Serial.println();
   Serial.print("Message : ");
   content.toUpperCase();
-  File data = SD.open("1234567.txt", FILE_WRITE);
-  data.print("access");
+  File data = SD.open("Attendance.txt", FILE_WRITE);
   
   for(int j = 0;j < members ;j++)
     {      
@@ -80,12 +79,14 @@ void loop()
           foundTag = true;
           if (data) 
           {
+             data.println("");
              data.print("Authorized access"); //Stores access status on SD card
              data.print(","); //Move to next column using a ","
              data.print(verified_rfid[j]); //Store user id on SD card
              data.print(","); //Move to next column using a ","
              data.print(employ[j]); //Store date on SD card
              data.print(","); //Move to next column using a ","
+             data.close();
            }
           else
            {
@@ -102,12 +103,14 @@ void loop()
             Serial.println("Unauthorized User");
             if (data) 
           {
+             data.println("");
              data.print("Unauthorized access"); //Stores access status on SD card
              data.print(","); //Move to next column using a ","
              data.print(content.substring(1)); //Store user id on SD card
              data.print(","); //Move to next column using a ","
              data.print("Unknown User"); //Store date on SD card
              data.print(","); //Move to next column using a ","
+             data.close();
            }
           else
            {
@@ -121,16 +124,16 @@ void loop()
 void Initialize_SDcard()
 {
   // see if the card is present and can be initialized:
-  if (!SD.begin(CS_SD)) {
+  if (!SD.begin(CS_SD)) 
+  {
     Serial.println("Card failed, or not present");
     return;
   }
-  File dataFile = SD.open("1234567.txt", FILE_WRITE);
-  if (dataFile) {
+  File dataFile = SD.open("Attendance.txt", FILE_WRITE);
+  if (dataFile) 
+  {
     dataFile.println("Access,Tag_id,Name"); //Write the first row of the excel file
-    Serial.println("Hello");
+    Serial.println("File found");
     dataFile.close();
   }
-  else
-  Serial.println("Hellow");
 }
